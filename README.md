@@ -68,7 +68,71 @@ Add to `~/.claude/settings.json`:
 }
 ```
 
-Then from any Claude Code session, use the `share_session` tool to share it.
+Then restart Claude Code to load the MCP server.
+
+> **Local development:** If you haven't published the package, use a direct path instead:
+> ```json
+> "command": "bun",
+> "args": ["run", "/path/to/claude-share-session/packages/mcp-server/src/index.ts"]
+> ```
+
+## Usage
+
+### Share a session
+
+From any Claude Code conversation, ask Claude to share the session:
+
+```
+> Share this session
+```
+
+Claude will call the `share_session` tool, which:
+1. Reads the current `.jsonl` session from `~/.claude/projects/`
+2. Sanitizes it (removes secrets, absolute paths, truncates large outputs)
+3. Uploads it to the web server
+4. Returns a shareable URL like `http://localhost:3000/s/abc123def456`
+
+Share that URL with anyone — no authentication needed to view.
+
+### List shared sessions
+
+```
+> List my shared sessions
+```
+
+Returns all sessions you've shared, with their URLs and metadata.
+
+### Delete a shared session
+
+```
+> Unshare session abc123def456
+```
+
+Permanently removes the session. The URL will stop working immediately.
+
+### View a session
+
+Open the shared URL in any browser. The viewer shows:
+
+- **Session header** — title, project, branch, model, token usage
+- **Messages** — user messages (blue, right) and assistant responses (gray, left)
+- **Thinking blocks** — collapsible, with amber border
+- **Tool calls** — collapsible, with tool name badge
+- **Code blocks** — syntax highlighted, with copy button and line numbers
+- **Pagination** — loads 50 messages initially, infinite scroll for the rest
+
+### What gets sanitized
+
+Before uploading, sessions are cleaned automatically:
+
+| What | Example | Result |
+|------|---------|--------|
+| Home paths | `/Users/john/projects/app` | `~/projects/app` |
+| API keys | `sk-ant-abc123...` | `[REDACTED]` |
+| GitHub tokens | `ghp_xxxx...` | `[REDACTED]` |
+| Slack tokens | `xoxb-xxxx...` | `[REDACTED]` |
+| Env secrets | `PASSWORD=hunter2` | `[REDACTED]` |
+| Large outputs | Tool results > 10KB | First/last 500 chars + `[truncated]` |
 
 ## MCP Tools
 
