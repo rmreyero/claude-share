@@ -111,7 +111,7 @@ export function SessionViewer({ shareId, apiBase }: Props) {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-base)', color: 'var(--text-primary)' }}>
-      <div className="max-w-3xl mx-auto px-6 py-10 lg:px-8">
+      <div className="max-w-5xl mx-auto px-6 py-10 lg:px-8">
         <SessionHeader session={session} />
         <div className="mt-8 space-y-5">
           {messages.map((msg) => (

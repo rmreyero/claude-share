@@ -124,3 +124,66 @@ body {
 .collapse-arrow.expanded {
   transform: rotate(90deg);
 }
+
+/* ── Markdown prose ──────────────────────────────────── */
+.message-card h1, .message-card h2, .message-card h3,
+.message-card h4, .message-card h5, .message-card h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+.message-card h1 { font-size: 1.5em; }
+.message-card h2 { font-size: 1.25em; }
+.message-card h3 { font-size: 1.1em; }
+
+.message-card ul, .message-card ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+.message-card li { margin: 0.25em 0; }
+.message-card ul { list-style-type: disc; }
+.message-card ol { list-style-type: decimal; }
+.message-card li > ul, .message-card li > ol { margin: 0.25em 0; }
+
+.message-card blockquote {
+  border-left: 3px solid var(--accent-warm);
+  padding-left: 1em;
+  margin: 0.75em 0;
+  color: var(--text-secondary);
+}
+
+.message-card table {
+  border-collapse: collapse;
+  margin: 0.75em 0;
+  font-size: 0.9em;
+}
+.message-card th, .message-card td {
+  border: 1px solid var(--border);
+  padding: 0.4em 0.8em;
+}
+.message-card th {
+  background: var(--bg-elevated);
+  font-weight: 600;
+}
+
+.message-card strong { color: var(--text-primary); font-weight: 600; }
+.message-card em { font-style: italic; }
+.message-card hr { border-color: var(--border); margin: 1em 0; }
+.message-card p { margin: 0.5em 0; }
+.message-card p:first-child { margin-top: 0; }
+.message-card p:last-child { margin-bottom: 0; }
+
+/* ── Shiki overrides ─────────────────────────────────── */
+.shiki-wrapper .shiki {
+  background: var(--code-bg) !important;
+  padding: 0;
+  margin: 0;
+  overflow-x: auto;
+}
+.shiki-wrapper .shiki code {
+  font-family: 'Fira Code', 'Menlo', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
