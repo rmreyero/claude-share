@@ -175,6 +175,53 @@ body {
 .message-card p:first-child { margin-top: 0; }
 .message-card p:last-child { margin-bottom: 0; }
 
+/* ── Diff line styles ───────────────────────────────── */
+.diff-line-added {
+  background: rgba(109, 209, 130, 0.14);
+  border-left: 2px solid rgba(109, 209, 130, 0.5);
+}
+.diff-line-removed {
+  background: rgba(209, 109, 109, 0.14);
+  border-left: 2px solid rgba(209, 109, 109, 0.5);
+}
+.diff-line-context {
+  background: transparent;
+  border-left: 2px solid transparent;
+}
+/* Shiki decorations: keep inline but boost backgrounds */
+.shiki-wrapper .diff-line-added {
+  background: rgba(109, 209, 130, 0.14);
+  display: inline;
+}
+.shiki-wrapper .diff-line-removed {
+  background: rgba(209, 109, 109, 0.14);
+  display: inline;
+}
+.diff-view .shiki {
+  background: transparent !important;
+}
+.diff-view .shiki code {
+  font-family: 'Fira Code', 'Menlo', monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.diff-view .shiki code .line {
+  display: block;
+  padding-left: 0.25rem;
+}
+/* Prefix column items get matching left borders */
+.diff-prefix-added {
+  border-left: 2px solid rgba(109, 209, 130, 0.5);
+  background: rgba(109, 209, 130, 0.14);
+}
+.diff-prefix-removed {
+  border-left: 2px solid rgba(209, 109, 109, 0.5);
+  background: rgba(209, 109, 109, 0.14);
+}
+.diff-prefix-context {
+  border-left: 2px solid transparent;
+}
+
 /* ── Shiki overrides ─────────────────────────────────── */
 .shiki-wrapper .shiki {
   background: var(--code-bg) !important;
