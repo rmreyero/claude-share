@@ -9,39 +9,64 @@ import type { CreateSessionRequest, CreateSessionResponse } from "@claude-share/
 const SHARE_SERVER_URL = process.env.SHARE_SERVER_URL ?? "http://localhost:3000";
 const SHARE_API_KEY = process.env.SHARE_API_KEY ?? "";
 
-/** Find the current session JSONL file */
-function findCurrentSession(): { path: string; projectName: string } | null {
+/** Encode a project path to the directory name format used by Claude Code */
+function encodeProjectPath(projectPath: string): string {
+  return projectPath.replace(/\//g, "-");
+}
+
+/** Find the most recent .jsonl in a single project directory */
+function findLatestInDir(
+  projectDir: string,
+  dirName: string,
+): { path: string; projectName: string; mtime: number } | null {
+  if (!existsSync(projectDir)) return null;
+
+  let latestFile: string | null = null;
+  let latestTime = 0;
+
+  const files = readdirSync(projectDir, { withFileTypes: true });
+  for (const file of files) {
+    if (!file.name.endsWith(".jsonl")) continue;
+    const filePath = join(projectDir, file.name);
+    const stat = Bun.file(filePath);
+    const mtime = stat.lastModified;
+    if (mtime > latestTime) {
+      latestTime = mtime;
+      latestFile = filePath;
+    }
+  }
+
+  if (!latestFile) return null;
+  const projectName = dirName.replace(/-/g, "/").replace(/^\//, "");
+  return { path: latestFile, projectName, mtime: latestTime };
+}
+
+/** Find the current session JSONL file, optionally scoped to a project path */
+function findCurrentSession(projectPath?: string): { path: string; projectName: string } | null {
   const claudeDir = join(process.env.HOME ?? "~", ".claude");
   const projectsDir = join(claudeDir, "projects");
 
   if (!existsSync(projectsDir)) return null;
 
-  let latestFile: string | null = null;
-  let latestTime = 0;
-  let projectName = "unknown";
+  // If projectPath is given, only search within that project's directory
+  if (projectPath) {
+    const encodedDir = encodeProjectPath(projectPath);
+    const projectDir = join(projectsDir, encodedDir);
+    return findLatestInDir(projectDir, encodedDir);
+  }
 
-  // Walk through project directories to find the most recent .jsonl
+  // Otherwise, scan all project directories
+  let best: { path: string; projectName: string; mtime: number } | null = null;
   const projectDirs = readdirSync(projectsDir, { withFileTypes: true });
   for (const dir of projectDirs) {
     if (!dir.isDirectory()) continue;
-    const projectDir = join(projectsDir, dir.name);
-    const files = readdirSync(projectDir, { withFileTypes: true });
-    for (const file of files) {
-      if (!file.name.endsWith(".jsonl")) continue;
-      const filePath = join(projectDir, file.name);
-      const stat = Bun.file(filePath);
-      // Use the file's lastModified
-      const mtime = stat.lastModified;
-      if (mtime > latestTime) {
-        latestTime = mtime;
-        latestFile = filePath;
-        projectName = dir.name.replace(/-/g, "/").replace(/^\//, "");
-      }
+    const result = findLatestInDir(join(projectsDir, dir.name), dir.name);
+    if (result && (!best || result.mtime > best.mtime)) {
+      best = result;
     }
   }
 
-  if (!latestFile) return null;
-  return { path: latestFile, projectName };
+  return best;
 }
 
 export function registerShareSession(server: McpServer) {
@@ -67,7 +92,7 @@ export function registerShareSession(server: McpServer) {
           path = sessionPath;
           projectName = basename(sessionPath, ".jsonl");
         } else {
-          const found = findCurrentSession();
+          const found = findCurrentSession(projectPath);
           if (!found) {
             return {
               content: [{ type: "text", text: "No session found. Make sure you have an active Claude Code session." }],

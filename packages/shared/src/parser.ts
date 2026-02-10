@@ -67,6 +67,11 @@ function hasToolUse(content: ContentBlock[]): boolean {
   return content.some((b) => b.type === "tool_use");
 }
 
+/** Strip XML/HTML-like tags from text */
+function stripTags(text: string): string {
+  return text.replace(/<[^>]+>/g, "").trim();
+}
+
 /** Derive a session title from the first user message */
 function deriveTitle(messages: ParsedMessage[]): string {
   const firstUser = messages.find((m) => m.type === "user");
@@ -75,7 +80,9 @@ function deriveTitle(messages: ParsedMessage[]): string {
   const textBlock = firstUser.content.find((b) => b.type === "text");
   if (!textBlock || textBlock.type !== "text") return "Untitled Session";
 
-  const text = textBlock.text.trim();
+  // Strip XML/HTML tags (Claude Code uses internal tags like <command-message>)
+  const text = stripTags(textBlock.text).replace(/\s+/g, " ").trim();
+  if (!text) return "Untitled Session";
   if (text.length <= 80) return text;
   return text.slice(0, 77) + "...";
 }

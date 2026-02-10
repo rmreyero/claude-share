@@ -149,6 +149,7 @@ export function sanitizeSession(session: ParsedSession, projectPath?: string): P
   return {
     metadata: {
       ...session.metadata,
+      title: redactSecrets(sanitizePaths(session.metadata.title, projectPath)),
       projectName: sanitizePaths(session.metadata.projectName, projectPath),
     },
     messages: session.messages.map((msg) => sanitizeMessage(msg, projectPath)),
