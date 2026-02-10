@@ -57,7 +57,7 @@ function landingHtml(baseUrl: string): string {
       --border-subtle: #16161b;
       --text-primary: #e8e6e1;
       --text-secondary: #9e9d97;
-      --text-muted: #5c5b56;
+      --text-muted: #78776f;
       --accent: #d4a574;
       --accent-dim: rgba(212, 165, 116, 0.08);
       --accent-glow: rgba(212, 165, 116, 0.04);
@@ -97,8 +97,8 @@ function landingHtml(baseUrl: string): string {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: min(92vh, 680px);
-      padding: 4rem 2rem 6rem;
+      height: 100vh;
+      padding: 4rem 2rem 1.5rem;
       text-align: center;
     }
     .hero::before {
@@ -120,18 +120,6 @@ function landingHtml(baseUrl: string): string {
       right: 0;
       height: 1px;
       background: linear-gradient(90deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%);
-    }
-
-    .hero-glyph {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      line-height: 1.35;
-      color: var(--text-muted);
-      opacity: 0.4;
-      margin-bottom: 3rem;
-      white-space: pre;
-      animation: glyphIn 1s ease-out 0.1s both;
-      letter-spacing: 0.05em;
     }
 
     .hero-badge {
@@ -212,10 +200,7 @@ function landingHtml(baseUrl: string): string {
     }
 
     .scroll-hint {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
+      margin-top: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -244,7 +229,7 @@ function landingHtml(baseUrl: string): string {
       top: 0;
       left: 0;
       right: 0;
-      height: 200px;
+      height: 120px;
       background: linear-gradient(to bottom, var(--bg-deep), var(--bg-surface));
       pointer-events: none;
     }
@@ -253,11 +238,11 @@ function landingHtml(baseUrl: string): string {
       position: relative;
       max-width: 660px;
       margin: 0 auto;
-      padding: 5rem 2rem 6rem;
+      padding: 3.5rem 2rem 3rem;
     }
 
     .setup-header {
-      margin-bottom: 3.5rem;
+      margin-bottom: 2rem;
     }
     .setup-header h2 {
       font-family: 'DM Serif Display', Georgia, serif;
@@ -277,7 +262,7 @@ function landingHtml(baseUrl: string): string {
     /* ── Step cards ─────────────────────────────────── */
     .step-card {
       position: relative;
-      padding: 2rem 0;
+      padding: 1.75rem 0;
     }
     .step-card + .step-card {
       border-top: 1px solid var(--border-subtle);
@@ -393,10 +378,6 @@ function landingHtml(baseUrl: string): string {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes glyphIn {
-      from { opacity: 0; transform: translateY(10px) scale(0.97); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
     @keyframes bobDown {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(4px); }
@@ -404,8 +385,7 @@ function landingHtml(baseUrl: string): string {
 
     /* ── Responsive ─────────────────────────────────── */
     @media (max-width: 640px) {
-      .hero { min-height: 80vh; padding: 3rem 1.5rem 5rem; }
-      .hero-glyph { font-size: 0.55rem; }
+      .hero { height: 100vh; height: 100dvh; padding: 3rem 1.5rem 1.5rem; }
       h1 { font-size: 2rem; }
       .setup { padding: 3rem 1.5rem 4rem; }
       .hero-prompt { font-size: 0.75rem; padding: 0.6rem 1rem; }
@@ -416,10 +396,6 @@ function landingHtml(baseUrl: string): string {
 
   <!-- ── Hero ──────────────────────────────────────── -->
   <section class="hero">
-    <div class="hero-glyph">    ╭──────────────────────────╮
-    │   session.jsonl  →  URL  │
-    ╰──────────────────────────╯</div>
-
     <div class="hero-badge">MCP Tool &middot; v0.1.0</div>
 
     <h1>Share your <em>Claude Code</em><br>sessions</h1>
