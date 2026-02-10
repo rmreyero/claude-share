@@ -5,6 +5,7 @@
  */
 import { createDatabase } from "../server/db/schema.js";
 import { createQueries } from "../server/db/queries.js";
+import { hashKey } from "../server/utils/hash.js";
 
 const name = process.argv[2] ?? "default";
 
@@ -13,9 +14,7 @@ const bytes = crypto.getRandomValues(new Uint8Array(32));
 const key = `sk-${Buffer.from(bytes).toString("base64url")}`;
 
 // Hash it
-const hash = new Bun.CryptoHasher("sha256");
-hash.update(key);
-const keyHash = hash.digest("hex");
+const keyHash = hashKey(key);
 
 // Store in database
 const db = createDatabase();

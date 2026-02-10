@@ -1,14 +1,8 @@
 import { Hono } from "hono";
 import type { createQueries } from "../db/queries.js";
+import { hashKey } from "../utils/hash.js";
 
 type Queries = ReturnType<typeof createQueries>;
-
-/** Hash an API key using SHA-256 */
-async function hashKey(key: string): Promise<string> {
-  const hash = new Bun.CryptoHasher("sha256");
-  hash.update(key);
-  return hash.digest("hex");
-}
 
 /** Create API key auth middleware */
 function requireAuth(queries: Queries) {
