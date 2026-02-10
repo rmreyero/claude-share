@@ -222,6 +222,17 @@ body {
   border-left: 2px solid transparent;
 }
 
+/* ── AskUserQuestion card ─────────────────────────────── */
+.ask-question-card {
+  transition: border-color 0.2s ease;
+}
+.ask-question-card:hover {
+  border-color: rgba(201, 149, 107, 0.2);
+}
+.ask-option {
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
 /* ── Shiki overrides ─────────────────────────────────── */
 .shiki-wrapper .shiki {
   background: var(--code-bg) !important;

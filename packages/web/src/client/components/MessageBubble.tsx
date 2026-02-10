@@ -6,6 +6,7 @@ import type {
 import { cleanUserText } from "@claude-share/shared";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { AskUserQuestionBlock } from "./AskUserQuestionBlock.js";
 import { CodeBlock } from "./CodeBlock.js";
 import { ThinkingBlock } from "./ThinkingBlock.js";
 import { ToolCallBlock, detectLanguage } from "./ToolCallBlock.js";
@@ -99,6 +100,16 @@ function renderBlock(
 					isError: result.is_error ?? false,
 					language: detectLanguage(block.name, block.input),
 				};
+			}
+			// Dedicated renderer for AskUserQuestion
+			if (block.name === "AskUserQuestion") {
+				return (
+					<AskUserQuestionBlock
+						key={index}
+						input={block.input}
+						toolResult={toolResult}
+					/>
+				);
 			}
 			return (
 				<ToolCallBlock
