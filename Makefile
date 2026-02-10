@@ -1,4 +1,4 @@
-.PHONY: help install setup dev dev-mcp dev-all build build-web build-mcp typecheck \
+.PHONY: help ensure-bun install setup dev dev-mcp dev-all build build-web build-mcp typecheck \
        docker-build docker-up docker-down docker-logs \
        db-reset generate-api-key clean lint format
 
@@ -10,7 +10,14 @@ help: ## Show this help
 install: ## Install dependencies
 	bun install
 
-setup: install ## Full setup: install + .env + initial API key
+ensure-bun: ## Check for bun and install if missing
+	@command -v bun >/dev/null 2>&1 || { \
+		echo "bun not found. Installing..."; \
+		curl -fsSL https://bun.sh/install | bash; \
+		echo "Restart your shell or run: source ~/.$$(basename $$SHELL)rc"; \
+	}
+
+setup: ensure-bun install ## Full setup: install + .env + initial API key
 	@test -f .env || cp .env.example .env
 	@echo "Generating initial API key..."
 	@bun run packages/web/src/scripts/generate-api-key.ts setup
