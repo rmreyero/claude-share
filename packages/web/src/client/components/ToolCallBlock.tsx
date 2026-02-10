@@ -87,6 +87,10 @@ interface DiffLine {
 }
 
 function computeDiff(oldStr: string, newStr: string): DiffLine[] {
+	// New file: all lines are additions
+	if (!oldStr) {
+		return newStr.split("\n").map((text) => ({ type: "add" as const, text }));
+	}
 	const oldLines = oldStr.split("\n");
 	const newLines = newStr.split("\n");
 	const lines: DiffLine[] = [];
@@ -399,6 +403,20 @@ export function ToolCallBlock({ name, input, toolResult }: Props) {
 								filePath={(input.file_path ?? "") as string}
 								oldStr={input.old_string as string}
 								newStr={input.new_string as string}
+							/>
+						</div>
+					) : isWrite && input.content != null ? (
+						<div
+							className="rounded-lg overflow-hidden mx-4 mt-3 mb-1"
+							style={{
+								background: "var(--code-bg)",
+								border: "1px solid var(--border)",
+							}}
+						>
+							<DiffView
+								filePath={(input.file_path ?? "") as string}
+								oldStr=""
+								newStr={input.content as string}
 							/>
 						</div>
 					) : (

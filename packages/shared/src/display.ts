@@ -32,8 +32,9 @@ export function cleanUserText(text: string): string {
   result = result.trim();
 
   if (commandName && !result) {
-    result = `/${commandName}`;
-    if (commandMessage && commandMessage !== commandName) {
+    const name = commandName.replace(/^\/+/, "");
+    result = `/${name}`;
+    if (commandMessage && commandMessage !== name) {
       result += ` ${commandMessage}`;
     }
   }
