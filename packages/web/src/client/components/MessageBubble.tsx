@@ -35,9 +35,8 @@ function renderTextContent(text: string) {
     if (seg.type === "code") {
       return <CodeBlock key={i} code={seg.content} language={seg.lang} />;
     }
-    // Render plain text with basic line breaks
     return (
-      <div key={i} className="whitespace-pre-wrap break-words">
+      <div key={i} className="whitespace-pre-wrap break-words leading-relaxed">
         {seg.content}
       </div>
     );
@@ -56,10 +55,32 @@ function renderBlock(block: ContentBlock, index: number) {
       const content = typeof block.content === "string"
         ? block.content
         : block.content.map((c) => c.text ?? "").join("\n");
+      const isError = block.is_error;
       return (
-        <div key={index} className={`text-sm p-3 rounded-lg ${block.is_error ? "bg-red-950/50 border border-red-800" : "bg-neutral-900"}`}>
-          <div className="text-xs text-neutral-500 mb-1">Tool Result</div>
-          <pre className="whitespace-pre-wrap text-neutral-300 overflow-x-auto">{content}</pre>
+        <div
+          key={index}
+          className="text-sm rounded-lg overflow-hidden"
+          style={{
+            background: isError ? 'var(--error-accent-dim)' : 'var(--bg-surface)',
+            border: `1px solid ${isError ? 'rgba(209, 109, 109, 0.2)' : 'var(--border-subtle)'}`,
+          }}
+        >
+          <div
+            className="px-4 py-2 text-xs font-medium"
+            style={{
+              color: isError ? 'var(--error-accent)' : 'var(--text-muted)',
+              borderBottom: `1px solid ${isError ? 'rgba(209, 109, 109, 0.12)' : 'var(--border-subtle)'}`,
+              background: isError ? 'rgba(209, 109, 109, 0.05)' : 'var(--bg-elevated)',
+            }}
+          >
+            {isError ? 'Error Result' : 'Tool Result'}
+          </div>
+          <pre
+            className="whitespace-pre-wrap overflow-x-auto font-mono text-sm px-4 py-3"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            {content}
+          </pre>
         </div>
       );
     }
@@ -72,18 +93,33 @@ export function MessageBubble({ message }: Props) {
   const isUser = message.type === "user";
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`max-w-[85%] rounded-2xl px-5 py-3 space-y-3 ${
-          isUser
-            ? "bg-blue-600 text-white"
-            : "bg-neutral-900 text-neutral-100 border border-neutral-800"
-        }`}
-      >
-        <div className="text-xs font-medium opacity-60 mb-1">
+    <div className="message-card rounded-xl px-6 py-5" style={{
+      borderLeft: isUser ? '3px solid var(--user-accent)' : '3px solid transparent',
+      background: isUser ? 'var(--user-accent-dim)' : 'transparent',
+    }}>
+      {/* Role label */}
+      <div className="flex items-center gap-2.5 mb-3">
+        <span
+          className="text-xs font-semibold uppercase tracking-wider"
+          style={{ color: isUser ? 'var(--user-accent)' : 'var(--accent-warm)' }}
+        >
           {isUser ? "User" : "Assistant"}
-          {message.model && !isUser && <span className="ml-2">{message.model}</span>}
-        </div>
+        </span>
+        {message.model && !isUser && (
+          <span
+            className="text-xs font-mono px-2 py-0.5 rounded"
+            style={{
+              color: 'var(--text-muted)',
+              background: 'var(--bg-elevated)',
+            }}
+          >
+            {message.model}
+          </span>
+        )}
+      </div>
+
+      {/* Content blocks */}
+      <div className="space-y-3">
         {message.content.map((block, i) => renderBlock(block, i))}
       </div>
     </div>

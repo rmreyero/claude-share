@@ -76,10 +76,17 @@ export function SessionViewer({ shareId, apiBase }: Props) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">Session Not Found</h1>
-          <p className="text-neutral-400">This session may have been deleted or the link is invalid.</p>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: 'var(--bg-base)', color: 'var(--text-primary)' }}
+      >
+        <div className="text-center animate-fade-up">
+          <h1 className="font-display text-3xl mb-3" style={{ color: '#fff' }}>
+            Session Not Found
+          </h1>
+          <p style={{ color: 'var(--text-secondary)' }}>
+            This session may have been deleted or the link is invalid.
+          </p>
         </div>
       </div>
     );
@@ -87,24 +94,45 @@ export function SessionViewer({ shareId, apiBase }: Props) {
 
   if (loading || !session) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center">
-        <div className="text-neutral-400">Loading session...</div>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: 'var(--bg-base)' }}
+      >
+        <div className="flex items-center gap-3" style={{ color: 'var(--text-muted)' }}>
+          <div
+            className="w-2 h-2 rounded-full animate-pulse"
+            style={{ background: 'var(--accent-warm)' }}
+          />
+          Loading session...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen" style={{ background: 'var(--bg-base)', color: 'var(--text-primary)' }}>
+      <div className="max-w-3xl mx-auto px-6 py-10 lg:px-8">
         <SessionHeader session={session} />
-        <div className="mt-6 space-y-4">
+        <div className="mt-8 space-y-5">
           {messages.map((msg) => (
             <MessageBubble key={msg.sequence} message={msg} />
           ))}
         </div>
         {messages.length < total && (
-          <div ref={observerRef} className="py-8 text-center text-neutral-500">
-            {loadingMore ? "Loading more messages..." : ""}
+          <div
+            ref={observerRef}
+            className="py-10 text-center text-sm"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            {loadingMore && (
+              <span className="flex items-center justify-center gap-2">
+                <span
+                  className="w-1.5 h-1.5 rounded-full animate-pulse"
+                  style={{ background: 'var(--accent-warm)' }}
+                />
+                Loading more messages...
+              </span>
+            )}
           </div>
         )}
       </div>

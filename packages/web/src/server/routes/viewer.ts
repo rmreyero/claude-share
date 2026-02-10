@@ -23,9 +23,12 @@ function viewerHtml(shareId: string, title: string, description: string, baseUrl
   <meta property="og:type" content="article">
   <meta property="og:url" content="${baseUrl}/s/${shareId}">
   <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/public/style.css">
 </head>
-<body>
+<body class="grain">
   <div id="root" data-share-id="${shareId}" data-api-base="${baseUrl}"></div>
   <script src="/public/index.js"></script>
 </body>
@@ -39,20 +42,80 @@ function landingHtml(baseUrl: string): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claude Share Session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e5e5e5; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .container { max-width: 600px; text-align: center; padding: 2rem; }
-    h1 { font-size: 2rem; margin-bottom: 1rem; color: #fff; }
-    p { color: #a3a3a3; line-height: 1.6; margin-bottom: 1.5rem; }
-    code { background: #1a1a1a; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.9em; color: #d4a574; }
-    .badge { display: inline-block; background: #1a1a2e; color: #7c93db; padding: 0.3em 0.8em; border-radius: 9999px; font-size: 0.85rem; margin-bottom: 2rem; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: #0c0c0b;
+      color: #eae9e6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 540px;
+      text-align: center;
+      padding: 3rem 2rem;
+      animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2.75rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    p {
+      color: #b5b4ad;
+      line-height: 1.75;
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      background: #1c1c1a;
+      padding: 0.25em 0.6em;
+      border-radius: 6px;
+      font-size: 0.85em;
+      color: #c9956b;
+      border: 1px solid #2a2a27;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(155, 142, 196, 0.1);
+      color: #9b8ec4;
+      padding: 0.35em 1em;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      margin-bottom: 2.5rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      border: 1px solid rgba(155, 142, 196, 0.15);
+    }
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: #2a2a27;
+      margin: 0 auto 2rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="badge">v0.1.0</div>
     <h1>Claude Share Session</h1>
+    <div class="divider"></div>
     <p>Share your Claude Code sessions with a simple URL. Sessions are sanitized to remove secrets and absolute paths before sharing.</p>
     <p>Use the MCP tool <code>share_session</code> from Claude Code to share your current session.</p>
   </div>
