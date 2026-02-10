@@ -1,9 +1,9 @@
 {
-  "name": "claude-share-session-mcp",
+  "name": "@claude-share/mcp",
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "claude-share-session-mcp": "./src/index.ts"
+    "claude-share-mcp": "./src/index.ts"
   },
   "main": "src/index.ts",
   "scripts": {

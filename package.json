@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "build": "bun run --filter '*' build",
-    "dev:web": "bun run --filter web dev",
-    "dev:mcp": "bun run --filter mcp-server dev",
+    "dev:web": "bun run --filter @claude-share/web dev",
+    "dev:mcp": "bun run --filter @claude-share/mcp dev",
     "typecheck": "bun run --filter '*' typecheck",
     "lint": "bunx biome check .",
     "format": "bunx biome format --write .",

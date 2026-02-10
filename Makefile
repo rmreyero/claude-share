@@ -28,7 +28,7 @@ dev: ## Start web server (dev mode)
 	bun run --filter @claude-share/web dev
 
 dev-mcp: ## Start MCP server (dev mode)
-	bun run --filter claude-share-session-mcp dev
+	bun run --filter @claude-share/mcp dev
 
 dev-all: ## Start web + MCP servers in parallel
 	@make dev & make dev-mcp & wait
@@ -42,7 +42,7 @@ build-web: ## Build web server only
 	bun run --filter @claude-share/web build
 
 build-mcp: ## Build MCP server only
-	bun run --filter claude-share-session-mcp build
+	bun run --filter @claude-share/mcp build
 
 typecheck: ## Run TypeScript type checking
 	bun run --filter '*' typecheck
@@ -64,7 +64,7 @@ docker-logs: ## Follow Docker container logs
 # ── Database ───────────────────────────────────────────
 
 db-reset: ## Reset database (delete and recreate)
-	rm -f data/sessions.db
+	rm -f data/sessions.db data/sessions.db-wal data/sessions.db-shm
 	@echo "Database reset. It will be recreated on next server start."
 
 generate-api-key: ## Generate a new API key

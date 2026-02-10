@@ -1,22 +1,23 @@
 import { Database } from "bun:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
+import { resolveDatabasePath } from "../config.js";
 
-const DATABASE_PATH = process.env.DATABASE_PATH ?? "./data/sessions.db";
+const DATABASE_PATH = resolveDatabasePath();
 
 function ensureDir(path: string) {
-  mkdirSync(dirname(path), { recursive: true });
+	mkdirSync(dirname(path), { recursive: true });
 }
 
 export function createDatabase(): Database {
-  ensureDir(DATABASE_PATH);
-  const db = new Database(DATABASE_PATH, { create: true });
+	ensureDir(DATABASE_PATH);
+	const db = new Database(DATABASE_PATH, { create: true });
 
-  // Enable WAL mode for better concurrent read performance
-  db.run("PRAGMA journal_mode = WAL");
-  db.run("PRAGMA foreign_keys = ON");
+	// Enable WAL mode for better concurrent read performance
+	db.run("PRAGMA journal_mode = WAL");
+	db.run("PRAGMA foreign_keys = ON");
 
-  db.run(`
+	db.run(`
     CREATE TABLE IF NOT EXISTS sessions (
       share_id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
@@ -33,7 +34,7 @@ export function createDatabase(): Database {
     )
   `);
 
-  db.run(`
+	db.run(`
     CREATE TABLE IF NOT EXISTS messages (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       share_id TEXT NOT NULL REFERENCES sessions(share_id) ON DELETE CASCADE,
@@ -51,7 +52,7 @@ export function createDatabase(): Database {
     )
   `);
 
-  db.run(`
+	db.run(`
     CREATE TABLE IF NOT EXISTS api_keys (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       key_hash TEXT NOT NULL UNIQUE,
@@ -61,5 +62,5 @@ export function createDatabase(): Database {
     )
   `);
 
-  return db;
+	return db;
 }
