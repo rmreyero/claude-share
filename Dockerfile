@@ -8,7 +8,7 @@ RUN bun install --frozen-lockfile
 COPY tsconfig.base.json ./
 COPY packages/shared/ packages/shared/
 COPY packages/web/ packages/web/
-RUN cd packages/web && bun build ./src/server/index.ts --outdir ./dist/server --target bun && bun build ./src/client/index.tsx --outdir ./dist/public --minify
+RUN cd packages/web && bun build ./src/server/index.ts --outdir ./dist/server --target bun && bun build ./src/client/index.tsx --outdir ./dist/public --minify && bunx @tailwindcss/cli -i ./src/client/style.css -o ./dist/public/style.css --minify
 
 FROM oven/bun:1.2-slim
 WORKDIR /app
