@@ -3,8 +3,8 @@ import type { ParsedMessage, SessionMetadata } from "@claude-share/shared";
 
 export function createQueries(db: Database) {
   const insertSession = db.prepare(`
-    INSERT INTO sessions (share_id, title, project_name, branch, model, session_date, message_count, total_input_tokens, total_output_tokens)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO sessions (share_id, title, project_name, user_name, branch, model, session_date, message_count, total_input_tokens, total_output_tokens)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const insertMessage = db.prepare(`
@@ -41,6 +41,7 @@ export function createQueries(db: Database) {
           shareId,
           metadata.title,
           metadata.projectName,
+          metadata.userName ?? null,
           metadata.branch ?? null,
           metadata.model ?? null,
           metadata.sessionDate,

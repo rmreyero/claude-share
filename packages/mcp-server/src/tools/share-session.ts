@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
+import { userInfo } from "node:os";
 import { nanoid } from "nanoid";
 import { parseSession, sanitizeSession } from "@claude-share/shared";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -90,7 +91,9 @@ export function registerShareSession(server: McpServer) {
 
         if (sessionPath) {
           path = sessionPath;
-          projectName = basename(sessionPath, ".jsonl");
+          projectName = projectPath
+            ? basename(projectPath)
+            : basename(sessionPath, ".jsonl");
         } else {
           const found = findCurrentSession(projectPath);
           if (!found) {
@@ -99,11 +102,14 @@ export function registerShareSession(server: McpServer) {
             };
           }
           path = found.path;
-          projectName = found.projectName;
+          projectName = projectPath
+            ? basename(projectPath)
+            : found.projectName;
         }
 
         const jsonl = readFileSync(path, "utf-8");
         const parsed = parseSession(jsonl, projectName);
+        parsed.metadata.userName = userInfo().username;
         const sanitized = sanitizeSession(parsed, projectPath);
         const shareId = nanoid(12);
 

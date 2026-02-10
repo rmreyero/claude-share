@@ -18,6 +18,7 @@ export interface SessionListItem {
   shareId: string;
   title: string;
   projectName: string;
+  userName?: string;
   branch?: string;
   model?: string;
   sessionDate: string;
@@ -31,6 +32,7 @@ export interface SessionDetailResponse {
   shareId: string;
   title: string;
   projectName: string;
+  userName?: string;
   branch?: string;
   model?: string;
   sessionDate: string;

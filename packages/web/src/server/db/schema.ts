@@ -21,6 +21,7 @@ export function createDatabase(): Database {
       share_id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
       project_name TEXT NOT NULL,
+      user_name TEXT,
       branch TEXT,
       model TEXT,
       session_date TEXT NOT NULL,

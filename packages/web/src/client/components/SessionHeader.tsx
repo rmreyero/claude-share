@@ -35,6 +35,15 @@ export function SessionHeader({ session }: Props) {
       </h1>
 
       <div className="flex flex-wrap gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
+        {session.userName && (
+          <span
+            className="px-3.5 py-1.5 rounded-full font-medium"
+            style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}
+          >
+            {session.userName}
+          </span>
+        )}
+
         <span
           className="px-3.5 py-1.5 rounded-full font-medium"
           style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}

@@ -84,6 +84,7 @@ export interface ParsedSession {
 export interface SessionMetadata {
   title: string;
   projectName: string;
+  userName?: string;
   branch?: string;
   model?: string;
   sessionDate: string;
