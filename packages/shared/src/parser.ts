@@ -9,6 +9,26 @@ import type {
 
 const DISPLAYABLE_TYPES = new Set<string>(["user", "assistant"]);
 
+/** Recursively ensure all strings in a value are valid for JSON serialization */
+function sanitizeValue(value: unknown): unknown {
+  if (typeof value === "string") {
+    // Remove invalid escape sequences that could break JSON.stringify later
+    return value.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
+  }
+  if (Array.isArray(value)) {
+    return value.map(sanitizeValue);
+  }
+  if (value && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    const result: Record<string, unknown> = {};
+    for (const key of Object.keys(obj)) {
+      result[key] = sanitizeValue(obj[key]);
+    }
+    return result;
+  }
+  return value;
+}
+
 /** Parse a JSONL string into journal entries, skipping invalid lines */
 function parseLines(jsonl: string): JournalEntry[] {
   const entries: JournalEntry[] = [];
@@ -16,9 +36,10 @@ function parseLines(jsonl: string): JournalEntry[] {
     const trimmed = line.trim();
     if (!trimmed) continue;
     try {
-      entries.push(JSON.parse(trimmed) as JournalEntry);
+      const parsed = JSON.parse(trimmed);
+      entries.push(sanitizeValue(parsed) as JournalEntry);
     } catch {
-      // Skip malformed lines
+      // Skip malformed lines (including incomplete lines from active sessions)
     }
   }
   return entries;

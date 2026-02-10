@@ -69,6 +69,29 @@ function truncateText(text: string): string {
   );
 }
 
+/** Recursively sanitize strings within an object */
+function sanitizeObject(obj: Record<string, unknown>, projectPath?: string): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === "string") {
+      result[key] = redactSecrets(sanitizePaths(value, projectPath));
+    } else if (Array.isArray(value)) {
+      result[key] = value.map((item) =>
+        typeof item === "string"
+          ? redactSecrets(sanitizePaths(item, projectPath))
+          : item && typeof item === "object"
+            ? sanitizeObject(item as Record<string, unknown>, projectPath)
+            : item
+      );
+    } else if (value && typeof value === "object") {
+      result[key] = sanitizeObject(value as Record<string, unknown>, projectPath);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
 /** Sanitize a single content block */
 function sanitizeBlock(block: ContentBlock, projectPath?: string): ContentBlock {
   switch (block.type) {
@@ -87,9 +110,7 @@ function sanitizeBlock(block: ContentBlock, projectPath?: string): ContentBlock 
     case "tool_use":
       return {
         ...block,
-        input: JSON.parse(
-          redactSecrets(sanitizePaths(JSON.stringify(block.input), projectPath))
-        ),
+        input: sanitizeObject(block.input, projectPath),
       };
 
     case "tool_result": {

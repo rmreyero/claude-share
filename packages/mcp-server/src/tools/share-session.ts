@@ -115,8 +115,9 @@ export function registerShareSession(server: McpServer) {
           ],
         };
       } catch (error) {
+        const err = error instanceof Error ? `${error.message}\n${error.stack}` : String(error);
         return {
-          content: [{ type: "text", text: `Error sharing session: ${error}` }],
+          content: [{ type: "text", text: `Error sharing session: ${err}` }],
         };
       }
     }
