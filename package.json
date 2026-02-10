@@ -1,0 +1,23 @@
+{
+  "name": "claude-share-session",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/shared",
+    "packages/mcp-server",
+    "packages/web"
+  ],
+  "scripts": {
+    "build": "bun run --filter '*' build",
+    "dev:web": "bun run --filter web dev",
+    "dev:mcp": "bun run --filter mcp-server dev",
+    "typecheck": "bun run --filter '*' typecheck",
+    "lint": "bunx biome check .",
+    "format": "bunx biome format --write .",
+    "generate-api-key": "bun run packages/web/src/scripts/generate-api-key.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
+    "typescript": "^5.7.0"
+  }
+}
