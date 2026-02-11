@@ -13,7 +13,7 @@ Sessions are automatically sanitized — secrets, absolute paths, and large outp
 ```bash
 git clone https://github.com/your-org/claude-share-session.git
 cd claude-share-session
-make setup
+make install
 ```
 
 ### 2. Configure Claude Code
