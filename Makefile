@@ -7,7 +7,7 @@ help: ## Show this help
 
 # ── Setup ──────────────────────────────────────────────
 
-install: ## Install dependencies
+install: ensure-bun ## Install dependencies
 	bun install
 
 ensure-bun: ## Check for bun and install if missing
@@ -17,7 +17,7 @@ ensure-bun: ## Check for bun and install if missing
 		echo "Restart your shell or run: source ~/.$$(basename $$SHELL)rc"; \
 	}
 
-setup: ensure-bun install ## Full setup: install + .env + initial API key
+setup: install ## Full setup: install + .env + initial API key
 	@test -f .env || cp .env.example .env
 	@echo "Generating initial API key..."
 	@bun run packages/web/src/scripts/generate-api-key.ts setup
