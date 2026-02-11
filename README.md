@@ -4,6 +4,63 @@ Share your Claude Code sessions via a simple URL.
 
 Sessions are automatically sanitized — secrets, absolute paths, and large outputs are cleaned before sharing.
 
+## Setup — Use the MCP Server in Claude Code
+
+**Prerequisite:** [Bun](https://bun.sh) >= 1.2
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/your-org/claude-share-session.git
+cd claude-share-session
+bun install
+```
+
+### 2. Configure Claude Code
+
+Add the MCP server to your Claude Code settings (`~/.claude/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "share-session": {
+      "command": "bun",
+      "args": ["run", "/absolute/path/to/claude-share-session/packages/mcp-server/src/index.ts"],
+      "env": {
+        "SHARE_SERVER_URL": "https://claude-share-session.vercel.app",
+        "SHARE_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+Replace `/absolute/path/to/claude-share-session` with the actual path where you cloned the repo.
+
+### 3. Restart Claude Code
+
+Restart Claude Code (or run `/mcp`) so it picks up the new MCP server. You should see `share-session` listed.
+
+### 4. Share a session
+
+From any conversation, just ask:
+
+```
+> Share this session
+```
+
+Claude will parse, sanitize, and upload the session, then return a shareable URL like `https://claude-share-session.vercel.app/s/abc123def456`.
+
+Other available commands:
+
+| Command | What it does |
+|---------|-------------|
+| `Share this session` | Upload and get a shareable URL |
+| `List my shared sessions` | Show all shared sessions with URLs |
+| `Unshare session <id>` | Delete a shared session permanently |
+
+---
+
 ## Architecture
 
 ```
@@ -28,89 +85,7 @@ Sessions are automatically sanitized — secrets, absolute paths, and large outp
 | `packages/mcp-server` | Claude Code MCP plugin (runs locally via stdio) |
 | `packages/web` | Hono API server + React session viewer |
 
-## Quick Start
-
-### Prerequisites
-
-- [Bun](https://bun.sh) >= 1.2
-- [Docker](https://docker.com) (optional, for deployment)
-
-### Install & Run
-
-```bash
-# Clone and setup
-git clone https://github.com/your-org/claude-share-session.git
-cd claude-share-session
-make setup
-
-# Start the web server
-make dev
-```
-
-`make setup` will install dependencies, create `.env` from the example, and generate an initial API key.
-
-### Configure MCP Server in Claude Code
-
-Add to `~/.claude/settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "share-session": {
-      "command": "bunx",
-      "args": ["claude-share-session-mcp"],
-      "env": {
-        "SHARE_SERVER_URL": "http://localhost:3000",
-        "SHARE_API_KEY": "sk-your-generated-key"
-      }
-    }
-  }
-}
-```
-
-Then restart Claude Code to load the MCP server.
-
-> **Local development:** If you haven't published the package, use a direct path instead:
-> ```json
-> "command": "bun",
-> "args": ["run", "/path/to/claude-share-session/packages/mcp-server/src/index.ts"]
-> ```
-
-## Usage
-
-### Share a session
-
-From any Claude Code conversation, ask Claude to share the session:
-
-```
-> Share this session
-```
-
-Claude will call the `share_session` tool, which:
-1. Reads the current `.jsonl` session from `~/.claude/projects/`
-2. Sanitizes it (removes secrets, absolute paths, truncates large outputs)
-3. Uploads it to the web server
-4. Returns a shareable URL like `http://localhost:3000/s/abc123def456`
-
-Share that URL with anyone — no authentication needed to view.
-
-### List shared sessions
-
-```
-> List my shared sessions
-```
-
-Returns all sessions you've shared, with their URLs and metadata.
-
-### Delete a shared session
-
-```
-> Unshare session abc123def456
-```
-
-Permanently removes the session. The URL will stop working immediately.
-
-### View a session
+## Session Viewer
 
 Open the shared URL in any browser. The viewer shows:
 
