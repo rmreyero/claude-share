@@ -7,8 +7,12 @@ import { parseSession, sanitizeSession } from "@claude-share/shared";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CreateSessionRequest, CreateSessionResponse } from "@claude-share/shared";
 
-const SHARE_SERVER_URL = process.env.SHARE_SERVER_URL ?? "http://localhost:3000";
-const SHARE_API_KEY = process.env.SHARE_API_KEY ?? "";
+function getServerUrl() {
+  return process.env.SHARE_SERVER_URL ?? "https://claude-share-session.vercel.app";
+}
+function getApiKey() {
+  return process.env.SHARE_API_KEY ?? "";
+}
 
 /** Encode a project path to the directory name format used by Claude Code */
 function encodeProjectPath(projectPath: string): string {
@@ -119,11 +123,13 @@ export function registerShareSession(server: McpServer) {
           messages: sanitized.messages,
         };
 
-        const response = await fetch(`${SHARE_SERVER_URL}/api/sessions`, {
+        const serverUrl = getServerUrl();
+        const targetUrl = `${serverUrl}/api/sessions`;
+        const response = await fetch(targetUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${SHARE_API_KEY}`,
+            Authorization: `Bearer ${getApiKey()}`,
           },
           body: JSON.stringify(body),
         });

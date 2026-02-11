@@ -2,6 +2,7 @@
   "name": "claude-share-session",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/shared",
     "packages/mcp-server",
@@ -14,10 +15,15 @@
     "typecheck": "bun run --filter '*' typecheck",
     "lint": "bunx biome check .",
     "format": "bunx biome format --write .",
-    "generate-api-key": "bun run packages/web/src/scripts/generate-api-key.ts"
+    "generate-api-key": "bun run packages/web/src/scripts/generate-api-key.ts",
+    "build:vercel": "cd packages/web && bun run build:client && bun run build:css && mkdir -p ../../public/client && cp dist/client/* ../../public/client/"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
+    "@types/node": "^25.2.3",
     "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "hono": "^4.11.9"
   }
 }

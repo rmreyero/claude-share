@@ -6,3 +6,7 @@ data/
 .DS_Store
 .mcp.json
 .claude/
+/public/
+.vercel
+.env*.local
+.idea

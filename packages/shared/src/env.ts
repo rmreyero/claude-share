@@ -58,9 +58,14 @@ function parseEnvFile(content: string): Record<string, string> {
 	return vars;
 }
 
+/** Keys that must always be read from .env (parent process may inject stale values) */
+const FORCE_OVERWRITE_KEYS = new Set(["SHARE_SERVER_URL", "SHARE_API_KEY"]);
+
 /**
  * Find the monorepo root from `startDir` and load its `.env` file.
- * Only sets variables that are not already in process.env (no overwrite).
+ * Most variables are only set if not already present in process.env.
+ * SHARE_* variables are always overwritten — the parent process (e.g. Claude Code)
+ * may inject stale values from cached .env.local files.
  * Returns the monorepo root path, or null if not found.
  */
 export function loadEnv(startDir: string): string | null {
@@ -74,7 +79,7 @@ export function loadEnv(startDir: string): string | null {
 		const content = readFileSync(envPath, "utf-8");
 		const vars = parseEnvFile(content);
 		for (const [key, value] of Object.entries(vars)) {
-			if (process.env[key] === undefined) {
+			if (FORCE_OVERWRITE_KEYS.has(key) || process.env[key] === undefined) {
 				process.env[key] = value;
 			}
 		}

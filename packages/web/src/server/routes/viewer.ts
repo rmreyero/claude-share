@@ -26,11 +26,11 @@ function viewerHtml(shareId: string, title: string, description: string, baseUrl
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/public/style.css">
+  <link rel="stylesheet" href="/client/style.css">
 </head>
 <body class="grain">
   <div id="root" data-share-id="${shareId}" data-api-base="${baseUrl}"></div>
-  <script src="/public/index.js"></script>
+  <script src="/client/index.js"></script>
 </body>
 </html>`;
 }
@@ -490,9 +490,9 @@ export function createViewerRoutes(queries: Queries, baseUrl: string) {
   });
 
   // GET /s/:shareId — Session viewer
-  viewer.get("/s/:shareId", (c) => {
+  viewer.get("/s/:shareId", async (c) => {
     const shareId = c.req.param("shareId");
-    const session = queries.getSession(shareId);
+    const session = await queries.getSession(shareId);
 
     if (!session) {
       return c.html("<h1>Session not found</h1>", 404);

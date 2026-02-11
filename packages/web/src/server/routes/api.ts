@@ -13,9 +13,9 @@ function requireAuth(queries: Queries) {
     }
 
     const key = authHeader.slice(7);
-    const keyHash = await hashKey(key);
+    const keyHash = hashKey(key);
 
-    if (!queries.validateApiKey(keyHash)) {
+    if (!(await queries.validateApiKey(keyHash))) {
       return c.json({ error: "Invalid API key" }, 403);
     }
 
@@ -37,7 +37,7 @@ export function createApiRoutes(queries: Queries, baseUrl: string) {
     }
 
     try {
-      queries.createSession(shareId, metadata, messages);
+      await queries.createSession(shareId, metadata, messages);
       return c.json({
         shareId,
         url: `${baseUrl}/s/${shareId}`,
@@ -49,7 +49,7 @@ export function createApiRoutes(queries: Queries, baseUrl: string) {
 
   // GET /api/sessions — List all sessions
   api.get("/sessions", auth, async (c) => {
-    const sessions = queries.listSessions();
+    const sessions = await queries.listSessions();
     return c.json(
       sessions.map((s) => ({
         shareId: s.share_id,
@@ -69,7 +69,7 @@ export function createApiRoutes(queries: Queries, baseUrl: string) {
   // GET /api/sessions/:shareId — Session metadata (public)
   api.get("/sessions/:shareId", async (c) => {
     const shareId = c.req.param("shareId");
-    const session = queries.getSession(shareId);
+    const session = await queries.getSession(shareId);
 
     if (!session) {
       return c.json({ error: "Session not found" }, 404);
@@ -96,13 +96,13 @@ export function createApiRoutes(queries: Queries, baseUrl: string) {
     const offset = Number(c.req.query("offset") ?? "0");
     const limit = Math.min(Number(c.req.query("limit") ?? "50"), 100);
 
-    const session = queries.getSession(shareId);
+    const session = await queries.getSession(shareId);
     if (!session) {
       return c.json({ error: "Session not found" }, 404);
     }
 
-    const rows = queries.getMessages(shareId, limit, offset);
-    const total = queries.countMessages(shareId);
+    const rows = await queries.getMessages(shareId, limit, offset);
+    const total = await queries.countMessages(shareId);
 
     const messages = rows.map((row) => ({
       sequence: row.sequence,
@@ -123,7 +123,7 @@ export function createApiRoutes(queries: Queries, baseUrl: string) {
   // DELETE /api/sessions/:shareId — Delete session
   api.delete("/sessions/:shareId", auth, async (c) => {
     const shareId = c.req.param("shareId");
-    const deleted = queries.deleteSession(shareId);
+    const deleted = await queries.deleteSession(shareId);
     return c.json({ deleted });
   });
 

@@ -17,9 +17,9 @@ const key = `sk-${Buffer.from(bytes).toString("base64url")}`;
 const keyHash = hashKey(key);
 
 // Store in database
-const db = createDatabase();
-const queries = createQueries(db);
-queries.insertApiKey(keyHash, name);
+const client = await createDatabase();
+const queries = createQueries(client);
+await queries.insertApiKey(keyHash, name);
 
 console.log("API key generated successfully!\n");
 console.log(`  Name: ${name}`);

@@ -1,50 +1,15 @@
-import { resolve } from "node:path";
-import { Hono } from "hono";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { serveStatic } from "hono/bun";
-import { cors } from "hono/cors";
-import { BASE_URL, PORT } from "./config.js";
-import { createQueries } from "./db/queries.js";
-import { createDatabase } from "./db/schema.js";
-import { createApiRoutes } from "./routes/api.js";
-import { createViewerRoutes } from "./routes/viewer.js";
-import { hashKey } from "./utils/hash.js";
+import { PORT, BASE_URL } from "./config.js";
+import { createApp } from "./app.js";
 
-// Initialize database
-const db = createDatabase();
-const queries = createQueries(db);
-
-// Auto-register API key from environment
-const envKey = process.env.SHARE_API_KEY;
-if (!envKey || envKey === "sk-change-me") {
-	console.warn(
-		"WARNING: SHARE_API_KEY not configured. Protected endpoints will reject all requests.",
-	);
-	console.warn("Run 'make generate-api-key' or set SHARE_API_KEY in .env");
-} else {
-	const keyHash = hashKey(envKey);
-	if (!queries.validateApiKey(keyHash)) {
-		queries.insertApiKey(keyHash, "env-auto");
-		console.log(
-			"Auto-registered API key from SHARE_API_KEY environment variable",
-		);
-	}
-}
-
-// Create app
-const app = new Hono();
-
-// Middleware
-app.use("/api/*", cors());
+const app = await createApp();
 
 // Static files — resolve relative to this file, not CWD
-app.use(
-	"/public/*",
-	serveStatic({ root: resolve(import.meta.dir, "../../dist") }),
-);
+const currentDir = dirname(fileURLToPath(import.meta.url));
 
-// Routes
-app.route("/api", createApiRoutes(queries, BASE_URL));
-app.route("/", createViewerRoutes(queries, BASE_URL));
+app.use("/client/*", serveStatic({ root: resolve(currentDir, "../../dist") }));
 
 console.log(`Claude Share Session server running on ${BASE_URL}`);
 

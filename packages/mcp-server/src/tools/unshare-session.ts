@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { DeleteSessionResponse } from "@claude-share/shared";
 
-const SHARE_SERVER_URL = process.env.SHARE_SERVER_URL ?? "http://localhost:3000";
+const SHARE_SERVER_URL = process.env.SHARE_SERVER_URL ?? "https://claude-share-session.vercel.app";
 const SHARE_API_KEY = process.env.SHARE_API_KEY ?? "";
 
 export function registerUnshareSession(server: McpServer) {
